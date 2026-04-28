@@ -16,23 +16,12 @@ build:
       CARGO_PROFILE_RELEASE_STRIP: symbols
       CARGO_PROFILE_RELEASE_LTO: fat
       CFG_RELEASE: ${{ version }}
-      # Any C/asm code in transitive deps requires clang-cl (not MSVC cl.exe)
-      # when targeting aarch64-pc-windows-msvc. These vars are only consulted
-      # by cargo / cc-rs when CARGO_BUILD_TARGET is that triple, so they are
-      # inert elsewhere.
-      CC_aarch64_pc_windows_msvc: clang-cl
-      AR_aarch64_pc_windows_msvc: llvm-lib
-      CARGO_TARGET_AARCH64_PC_WINDOWS_MSVC_LINKER: lld-link
     content:
       - if: unix
         then:
           - cargo auditable install --locked --no-track --bin rust-analyzer --root ${{ PREFIX }} --path crates/rust-analyzer
         else:
-          - if: target_platform == "win-arm64"
-            then:
-              - cargo auditable install --locked --no-track --bin rust-analyzer --root %LIBRARY_PREFIX% --path crates/rust-analyzer --target aarch64-pc-windows-msvc
-            else:
-              - cargo auditable install --locked --no-track --bin rust-analyzer --root %LIBRARY_PREFIX% --path crates/rust-analyzer
+          - cargo auditable install --locked --no-track --bin rust-analyzer --root %LIBRARY_PREFIX% --path crates/rust-analyzer
       - cargo-bundle-licenses --format yaml --output ./THIRDPARTY.yml
 
 requirements:
@@ -42,10 +31,6 @@ requirements:
     - ${{ compiler('rust') }}
     - cargo-bundle-licenses
     - cargo-auditable
-    - if: target_platform == "win-arm64"
-      then:
-        - clang
-        - lld
 
 tests:
   - script: rust-analyzer --help
