@@ -1,5 +1,5 @@
 context:
-  version: "2026-04-27"
+  version: "2026-05-11"
 
 package:
   name: rust-analyzer
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/rust-lang/rust-analyzer/archive/refs/tags/${{ version }}.tar.gz
-  sha256: 1787d16d7383941bcc40d1cb7bf739d23dc296e2ee15a6aaad70affa32a88222
+  sha256: 6bb8fc1156ad7deb98894f456384a809126310a20a2ad693f04f4a894f562c77
 
 build:
   number: 0
